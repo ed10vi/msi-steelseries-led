@@ -4,6 +4,10 @@ Control Keyboard backlight in MSI laptops with Steelseries Engine 3 Keyboards.
 
 This software has been tested only in a MSI GT72VR 6RD Dominator.
 
+#### Thanks to
+- https://github.com/gokuhs/MSI-Keyboard-Led-Enabler
+- https://github.com/PaNaVTEC/MSI_GT_GE_Led_Enabler
+
 ## Installation
 ### Prerequisites
 - Build dependencies: `build-essential libhidapi-dev`
@@ -12,7 +16,7 @@ This software has been tested only in a MSI GT72VR 6RD Dominator.
 ### Install
 - Build the source: `make`
 - Install: `sudo make install`
-- Reboot
+- Reboot so udev rules take effect
 
 ### Uninstall
 - Uninstall: `sudo make uninstall`
@@ -57,3 +61,49 @@ All options accepts `random`.
 
 **Example:**
 	`$ msi-steelseries-led -m breathing -l random:00ff00:010305 -c white:teal -r 02AF42`
+
+## Protocol
+
+Using USBPcap in Windows, I managed to capture the data sent by the official client from SteelSeries.
+
+Analyzing the data with Wireshark this is what I got:
+
+**Mode normal** (similar for all static modes)
+```
+01 02 41 09 00 00 00 00
+01 02 40 01 RR GG BB 00 // Left area
+01 02 40 01 RR GG BB 00 // Center area
+01 02 40 01 RR GG BB 00 // Right area
+01 02 40 01 RR GG BB 00 // Logo area
+01 02 40 01 RR GG BB 00 // Front left area
+01 02 40 01 RR GG BB 00 // Front right area
+01 02 40 01 RR GG BB 00 // Touchpad area
+01 02 41 01 00 00 00 00 // Set mode
+```
+
+**Mode breathing** (similar for all dynamic modes)
+```
+01 02 41 09 00 00 00 00
+01 02 44 01 RR GG BB 00 // Left area primary
+01 02 44 02 RR GG BB 00 // Left area secondary
+01 02 44 03 SR SG SB 00 // Left area speed
+01 02 44 04 RR GG BB 00 // Center area primary
+01 02 44 05 RR GG BB 00 // Center area secondary
+01 02 44 06 SR SG SB 00 // Center area speed
+01 02 44 07 RR GG BB 00 // Right area primary
+01 02 44 08 RR GG BB 00 // Right area secondary
+01 02 44 09 SR SG SB 00 // Right area speed
+01 02 44 0A RR GG BB 00 // Logo area primary
+01 02 44 0B RR GG BB 00 // Logo area secondary
+01 02 44 0C SR SG SB 00 // Logo area speed
+01 02 44 0D RR GG BB 00 // Front left area primary
+01 02 44 0E RR GG BB 00 // Front left area secondary
+01 02 44 0F SR SG SB 00 // Front left area speed
+01 02 44 10 RR GG BB 00 // Front right area primary
+01 02 44 11 RR GG BB 00 // Front right area secondary
+01 02 44 12 SR SG SB 00 // Front right area speed
+01 02 44 13 RR GG BB 00 // Touchpad area primary
+01 02 44 14 RR GG BB 00 // Touchpad area secondary
+01 02 44 15 SR SG SB 00 // Touchpad area speed
+01 02 41 03 00 00 00 00 // Set mode
+```
