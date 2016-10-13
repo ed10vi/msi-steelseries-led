@@ -145,7 +145,7 @@ unsigned char parse_mode(char *arg)
 			rd += 1;
 		return rd;
 	} else
-		return 0;
+		return 0xFF;
 }
 
 void parse_colour(char *arg, unsigned char colour[3])
