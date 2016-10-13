@@ -220,7 +220,7 @@ void parse_area(char *arg, unsigned char area[9])
 	for (unsigned char i = 6; i < 9; i++)
 		area[i] = 0x03;
 
-	running = strdup(optarg);
+	running = strdup(arg);
 	token = strsep(&running, SEPARATOR);
 	if (token != NULL) {
 		if (strlen(token) > 2) {
