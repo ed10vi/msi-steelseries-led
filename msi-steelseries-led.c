@@ -116,7 +116,6 @@ int load(unsigned char *message, char *path, char *filename)
 		file = fopen(filepath, "rb"); // Open the file in binary mode
 		sz = fread(message, kSize, 1, file); // Read in the entire file
 		fclose(file); // Close the file
-		printf("%lu\n", sz);
 		return sz == 1 ? 0 : 1;
 	} else {
 		return 1;
