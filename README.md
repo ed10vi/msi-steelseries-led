@@ -16,7 +16,7 @@ This software has been tested only in a MSI GT72VR 6RD Dominator.
 ### Install
 - Build the source: `make`
 - Install: `sudo make install`
-- Reboot so udev rules take effect
+- Reboot so udev rules take effect.
 
 ### Uninstall
 - Uninstall: `sudo make uninstall`
@@ -30,7 +30,7 @@ This software has been tested only in a MSI GT72VR 6RD Dominator.
 | Short | Long | Description |
 | ----- | ---- | ----------- |
 | `-p` | `--preset` | Set one of this presets: `default`, `night`, `work`, `sea`, `magma`, `alien`, `dragon` and `heavenhell`. |
-| `-m` | `--mode` | Set mode: normal, gaming, breathing, wave, dual. |
+| `-m` | `--mode` | Set mode: `normal`, `gaming`, `breathing`, `wave`, `dual` (and `audio`, but it's not working). |
 | `-l` | `--left` | Set colour for left area (se bellow for available colours). |
 | `-c` | `--center` | Set colour for center area. |
 | `-r` | `--right` | Set colour for right area. |
@@ -41,7 +41,7 @@ This software has been tested only in a MSI GT72VR 6RD Dominator.
 | `-h` | `--help` | This help. |
 
 **Available colours:**
-	black, white, red, green, blue, cyan, magenta, yellow, orange and teal.
+	`black`, `white`, `red`, `green`, `blue`, `cyan`, `magenta`, `yellow`, `orange` and `teal`.
 	Or any colour by its hexadecimal code.
 	Black if not defined.
 
@@ -72,12 +72,12 @@ Analyzing the data with Wireshark this is what I got:
 ```
 01 02 41 09 00 00 00 00
 01 02 40 01 RR GG BB 00 // Left area
-01 02 40 01 RR GG BB 00 // Center area
-01 02 40 01 RR GG BB 00 // Right area
-01 02 40 01 RR GG BB 00 // Logo area
-01 02 40 01 RR GG BB 00 // Front left area
-01 02 40 01 RR GG BB 00 // Front right area
-01 02 40 01 RR GG BB 00 // Touchpad area
+01 02 40 02 RR GG BB 00 // Center area
+01 02 40 03 RR GG BB 00 // Right area
+01 02 40 04 RR GG BB 00 // Logo area
+01 02 40 05 RR GG BB 00 // Front left area
+01 02 40 06 RR GG BB 00 // Front right area
+01 02 40 07 RR GG BB 00 // Touchpad area
 01 02 41 01 00 00 00 00 // Set mode
 ```
 
