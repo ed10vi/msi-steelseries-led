@@ -13,7 +13,7 @@ LIBS=-lhidapi-libusb
 all: msi-steelseries-led
 
 msi-steelseries-led:
-	$(CC) -Wall -g msi-steelseries-led.c $(LIBS) -o msi-steelseries-led
+	$(CC) -Wall -s -O2 msi-steelseries-led.c $(LIBS) -o msi-steelseries-led
 
 clean:
 	rm -f msi-steelseries-led

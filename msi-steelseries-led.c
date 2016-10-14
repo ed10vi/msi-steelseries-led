@@ -107,15 +107,17 @@ int load(unsigned char *message, char *path, char *filename)
 {
 	FILE *file;
 	char *filepath = malloc(strlen(path) + strlen(filename) + 1);
+	size_t sz;
 
 	strcpy(filepath, path);
 	strcat(filepath, filename);
 
 	if (access(filepath, R_OK) == 0) {
 		file = fopen(filepath, "rb"); // Open the file in binary mode
-		fread(message, kSize, 1, file); // Read in the entire file
+		sz = fread(message, kSize, 1, file); // Read in the entire file
 		fclose(file); // Close the file
-		return 0;
+		printf("%lu\n", sz);
+		return sz == 1 ? 0 : 1;
 	} else {
 		return 1;
 	}
@@ -255,7 +257,7 @@ int main(int argc, char *argv[])
 	unsigned short flags = 0;
 	unsigned char preset = 0xFF;
 
-	char *path, *filename = ".msi-steelseries-led.conf.bin";
+	char *path = NULL, *filename = ".msi-steelseries-led.conf.bin";
 
 	char *usage = "MSI SteelSeries Led\n"
 	"Usage:\n"
