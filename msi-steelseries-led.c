@@ -52,40 +52,30 @@ void send_mode(hid_device *handle, unsigned char mode)
 		printf("Unable to send a feature report.\n");
 }
 
-void mode_normal(hid_device *handle, unsigned char message[kSize])
+void send_config(hid_device *handle, unsigned char msg[kSize])
 {
 	send_mode(handle, 0x09);
 
-	for (unsigned char i = 1; i < kSize; i += 9)
-		send_data(handle, CODE_STATIC, (i / 9) + 1, message[i], message[i + 1], message[i + 2]);
+	switch (msg[kMode]) {
+		case MODE_OFF:
+			send_mode(handle, MODE_OFF);
+			break;
+		case MODE_NORMAL:
+			for (unsigned char i = 1; i < kSize; i += 9)
+				send_data(handle, CODE_STATIC, (i / 9) + 1, msg[i], msg[i + 1], msg[i + 2]);
+			break;
+		case MODE_GAMING:
+			send_data(handle, CODE_STATIC, 1, msg[colourLeft1R], msg[colourLeft1G], msg[colourLeft1B]);
+			break;
+		case MODE_BREATHING:
+		case MODE_WAVE:
+		case MODE_DUAL:
+			for (unsigned char i = 1; i < kSize; i += 3)
+				send_data(handle, CODE_DYNAMIC, (i / 3) + 1, msg[i], msg[i + 1], msg[i + 2]);
+			break;
+	}
 
-	send_mode(handle, MODE_NORMAL);
-}
-/*
- * Exactly the same as normal, but only sets left area
- * Still works if sets all the areas
- */
-void mode_gaming(hid_device *handle, unsigned char message[kSize])
-{
-	send_mode(handle, 0x09);
-	send_data(handle, CODE_STATIC, 1, message[colourLeft1R], message[colourLeft1G], message[colourLeft1B]); // left
-	send_mode(handle, MODE_GAMING);
-}
-
-void mode_animated(hid_device *handle, unsigned char message[kSize])
-{
-	send_mode(handle, 0x09);
-
-	for (unsigned char i = 1; i < kSize; i += 3)
-		send_data(handle, CODE_DYNAMIC, (i / 3) + 1, message[i], message[i + 1], message[i + 2]);
-
-	send_mode(handle, message[kMode]);
-}
-
-void mode_audio(hid_device *handle)
-{
-	send_mode(handle, 0x09);
-	send_mode(handle, MODE_AUDIO);
+	send_mode(handle, msg[kMode]);
 }
 
 void save(unsigned char message[kSize], char *path, char *filename)
@@ -462,19 +452,11 @@ int main(int argc, char *argv[])
 		flags |= FLAG_NO_SAVE;
 	}
 
-	if (message[kMode] == MODE_OFF)
-		send_mode(handle, MODE_OFF);
-	else if (message[kMode] == MODE_NORMAL)
-		mode_normal(handle, message);
-	else if (message[kMode] == MODE_GAMING)
-		mode_gaming(handle, message);
-	else if (message[kMode] == MODE_AUDIO)
-		mode_audio(handle);
-	else if (message[kMode] == MODE_BREATHING || message[kMode] == MODE_WAVE || message[kMode] == MODE_DUAL)
-		mode_animated(handle, message);
-	else {
+	if (message[kMode] < MODE_OFF || message[kMode] > MODE_DUAL) {
 		perror("Invalid mode.");
 		return 1;
+	} else {
+		send_config(handle, message);
 	}
 
 	if ((flags & FLAG_NO_SAVE) != FLAG_NO_SAVE)
