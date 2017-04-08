@@ -24,6 +24,7 @@ install:
 	cp profile /etc/profile.d/msi-steelseries-led.sh
 	cp msi-steelseries-led.sh /etc/init.d
 	chmod 755 /usr/bin/msi-steelseries-led
+	chmod 755 /etc/profile.d/msi-steelseries-led.sh
 	chmod 755 /etc/init.d/msi-steelseries-led.sh
 	update-rc.d msi-steelseries-led.sh defaults
 
