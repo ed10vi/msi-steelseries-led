@@ -1,8 +1,8 @@
 # MSI SteelSeries LED
 
-Control Keyboard backlight in MSI laptops with Steelseries Engine 3 Keyboards.
+Control Keyboard backlight in MSI laptops with Steelseries Engine 3 and 2 Keyboards.
 
-This software has been tested only in a MSI GT72VR 6RD Dominator.
+This software has been tested only in a MSI GT72VR 6RD Dominator and a MSI GE70 2PE ApachePro.
 
 #### Thanks to
 - https://github.com/gokuhs/MSI-Keyboard-Led-Enabler
@@ -14,7 +14,7 @@ This software has been tested only in a MSI GT72VR 6RD Dominator.
 - Run dependencies: `libhidapi-libusb0`
 
 ### Install
-- Build the source: `make`
+- Build the source: `make` (for Steelseries Engine 2: `make msi-steelseries-led-E2`)
 - Install: `sudo make install`
 - Reboot so udev rules take effect.
 
@@ -66,7 +66,7 @@ All options accepts `random`.
 
 Using USBPcap in Windows, I managed to capture the data sent by the official client from SteelSeries.
 
-Analyzing the data with Wireshark this is what I got:
+Analyzing the data with Wireshark this is what I got on Engine 3:
 
 **Mode normal** (similar for all static modes)
 ```
@@ -105,5 +105,30 @@ Analyzing the data with Wireshark this is what I got:
 01 02 44 13 RR GG BB 00 // Touchpad area primary
 01 02 44 14 RR GG BB 00 // Touchpad area secondary
 01 02 44 15 SR SG SB 00 // Touchpad area speed
+01 02 41 03 00 00 00 00 // Set mode
+```
+
+
+this is what I got on Engine 2:
+
+**Mode normal** (similar for all static modes)
+```
+01 02 41 01 00 00 00 00 // Set mode
+01 02 40 01 RR GG BB 00 // Left area
+01 02 40 02 RR GG BB 00 // Center area
+01 02 40 03 RR GG BB 00 // Right area
+```
+
+**Mode breathing** (similar for all dynamic modes)
+```
+01 02 44 01 RR GG BB 00 // Left area primary
+01 02 44 02 RR GG BB 00 // Left area secondary
+01 02 44 03 SR SG SB 00 // Left area speed
+01 02 44 04 RR GG BB 00 // Center area primary
+01 02 44 05 RR GG BB 00 // Center area secondary
+01 02 44 06 SR SG SB 00 // Center area speed
+01 02 44 07 RR GG BB 00 // Right area primary
+01 02 44 08 RR GG BB 00 // Right area secondary
+01 02 44 09 SR SG SB 00 // Right area speed
 01 02 41 03 00 00 00 00 // Set mode
 ```

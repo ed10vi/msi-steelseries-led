@@ -57,7 +57,7 @@ enum values {
 	speedRightR,
 	speedRightG,
 	speedRightB,
-
+#ifndef E2
 	colourLogo1R,
 	colourLogo1G,
 	colourLogo1B,
@@ -97,6 +97,6 @@ enum values {
 	speedTouchpadR,
 	speedTouchpadG,
 	speedTouchpadB,
-
+#endif
 	kSize
 };

@@ -54,17 +54,24 @@ void send_mode(hid_device *handle, unsigned char mode)
 
 void send_config(hid_device *handle, unsigned char msg[kSize])
 {
+#ifndef E2
 	send_mode(handle, 0x09);
-
+#endif
 	switch (msg[kMode]) {
 		case MODE_OFF:
 			send_mode(handle, MODE_OFF);
 			break;
 		case MODE_NORMAL:
+#ifdef E2
+			send_mode(handle, msg[kMode]);
+#endif
 			for (unsigned char i = 1; i < kSize; i += 9)
 				send_data(handle, CODE_STATIC, (i / 9) + 1, msg[i], msg[i + 1], msg[i + 2]);
 			break;
 		case MODE_GAMING:
+#ifdef E2
+			send_mode(handle, msg[kMode]);
+#endif
 			send_data(handle, CODE_STATIC, 1, msg[colourLeft1R], msg[colourLeft1G], msg[colourLeft1B]);
 			break;
 		case MODE_BREATHING:
@@ -72,10 +79,14 @@ void send_config(hid_device *handle, unsigned char msg[kSize])
 		case MODE_DUAL:
 			for (unsigned char i = 1; i < kSize; i += 3)
 				send_data(handle, CODE_DYNAMIC, (i / 3) + 1, msg[i], msg[i + 1], msg[i + 2]);
+#ifdef E2
+			send_mode(handle, msg[kMode]);
+#endif
 			break;
 	}
-
+#ifndef E2
 	send_mode(handle, msg[kMode]);
+#endif
 }
 
 void save(unsigned char message[kSize], char *path, char *filename)
@@ -257,10 +268,12 @@ int main(int argc, char *argv[])
 	" -l left\t\tSet colour for left area\n\t\t\t(se bellow for available colours).\n"
 	" -c center\t\tSet colour for center area.\n"
 	" -r right\t\tSet colour for right area.\n"
+#ifndef E2
 	" -g logo\t\tSet colour for the SteelSeries logo.\n"
 	" -i front-left\t\tSet colour for front left area.\n"
 	" -d front-right\t\tSet colour for front right area.\n"
 	" -t touchpad\t\tSet colour for the touchpad.\n"
+#endif
 	" -h help\t\tThis help.\n\n"
 	"Available colours:\n\tblack, white, red, green, blue, cyan, magenta, yellow, orange and teal.\n\tOr any colour by its hexadecimal code.\n\tBlack if not defined.\n\n"
 	"Set a color: primary["SEPARATOR"secondary]["SEPARATOR"hex speed]\n\n"
@@ -275,17 +288,23 @@ int main(int argc, char *argv[])
 	"%s -m breathing -l random:00ff00:010305 -c white:teal -r 02AF42\n\n";
 
 	unsigned int opt = 0;
+#ifdef E2
+	const char *op = "p:m:l:c:r:nh";
+#else
 	const char *op = "p:m:l:c:r:g:i:d:t:nh";
+#endif
 	const struct option options[] = {
 		{ "preset",		1, NULL, 'p'},
 		{ "mode",		1, NULL, 'm'},
 		{ "left",		1, NULL, 'l'},
 		{ "center",		1, NULL, 'c'},
 		{ "right",		1, NULL, 'r'},
+#ifndef E2
 		{ "logo",		1, NULL, 'g'},
 		{ "front-left",		1, NULL, 'i'},
 		{ "front-right",	1, NULL, 'd'},
 		{ "touchpad",		1, NULL, 't'},
+#endif
 		{ "no-save",		0, NULL, 'n'},
 		{ "help",		0, NULL, 'h'},
 		{ NULL,			0, NULL,  0 }
@@ -385,6 +404,7 @@ int main(int argc, char *argv[])
 				for (unsigned char i = 0; i < sizeof(area); i++)
 					message[i + colourRight1R] = area[i];
 				break;
+#ifndef E2
 			case 'g':
 				if ((flags & FLAG_LOGO) == FLAG_LOGO) {
 					perror("Option --logo repeated.");
@@ -425,6 +445,7 @@ int main(int argc, char *argv[])
 				for (unsigned char i = 0; i < sizeof(area); i++)
 					message[i + colourTouchpad1R] = area[i];
 				break;
+#endif
 			case 'n':
 				if ((flags & FLAG_NO_SAVE) == FLAG_NO_SAVE) {
 					perror("Option --no-save repeated.");
@@ -433,11 +454,11 @@ int main(int argc, char *argv[])
 				flags |= FLAG_NO_SAVE;
 				break;
 			case 'h':
-				printf(usage, argv[0]);
+				printf(usage, argv[0], argv[0]);
 				return 0;
 				break;
 			default:
-				printf("Config loaded. Use --help for usage instructions.");
+				printf("Config loaded. Use --help for usage instructions.\n");
 				break;
 		}
 
