@@ -483,5 +483,6 @@ int main(int argc, char *argv[])
 	if ((flags & FLAG_NO_SAVE) != FLAG_NO_SAVE)
 		save(message, path, filename);
 
-	return 0;
+	hid_close(handle);
+	return hid_exit();
 }
