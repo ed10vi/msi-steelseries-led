@@ -24,16 +24,15 @@ clean:
 install:
 	cp udev-rules /etc/udev/rules.d/99-steelseries-gt72.rules
 	cp msi-steelseries-led /usr/bin
-	cp profile /etc/profile.d/msi-steelseries-led.sh
-	cp msi-steelseries-led.sh /etc/init.d
+	cp msi-steelseries-led.sh /etc/profile.d/
+	cp msi-steelseries-led.service /lib/systemd/system/
 	chmod 755 /usr/bin/msi-steelseries-led
 	chmod 755 /etc/profile.d/msi-steelseries-led.sh
-	chmod 755 /etc/init.d/msi-steelseries-led.sh
-	update-rc.d msi-steelseries-led.sh defaults
+	systemctl enable msi-steelseries-led.service
 
 uninstall:
-	update-rc.d -f msi-steelseries-led.sh remove
-	rm -f /etc/init.d/msi-steelseries-led.sh
+	systemctl disable msi-steelseries-led.service
+	rm -f /lib/systemd/system/msi-steelseries-led.service
 	rm -f /etc/profile.d/msi-steelseries-led.sh
 	rm -f /usr/bin/msi-steelseries-led
 	rm -f /etc/udev/rules.d/99-steelseries-gt72.rules

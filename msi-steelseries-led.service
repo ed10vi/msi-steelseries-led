@@ -1,0 +1,9 @@
+[Unit]
+Description=MSI Steelseries Keyboard led
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/msi-steelseries-led -n -p work
+
+[Install]
+WantedBy=basic.target
